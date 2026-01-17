@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+@font-face {
+  font-family: 'Poppins', sans-serif;
+}
+
+
+
+body {
+
+  background-color: #F3F3F3;
+
+  font-family: 'Poppins', sans-serif;
+
+
+}
+
+/* svg {
+      fill: #0d77cb;
+    } */
+:root {
+  --bs-breakpoint-xs: 0;
+  --bs-breakpoint-sm: 576px;
+  --bs-breakpoint-md: 768px;
+  --bs-breakpoint-lg: 992px;
+  --bs-breakpoint-xl: 1200px;
+  --bs-breakpoint-xxl: 1400px;
+}
+
+:root {
+
+  --evnt-primary: linear-gradient(to right, #13539d 0%, #1d71ce 100%);
+  --evnt-white: #ffffff;
+  --evnt-blue-dark: #152036;
+  --evnt-blue-dark: #1A202C;
+  --evnt-bg-green: #278557;
+  --evnt-search-border: #CBCBCB;
+  --evnt-black: #000000;
+  --evnt-gray: #4A5568;
+  --evnt-br-dark-bg: #00553c;
+  --evnt-gradient: transparent linear-gradient(180deg, #1973D8 0%, #0B488F 100%);
+
+  --evnt-org: #ffaa18;
+
+  /* custom padding abr margin*/
+  --evnt-space-0: 0px;
+  --evnt-space-25: 1px;
+  --evnt-space-50: 2px;
+  --evnt-space-100: 4px;
+  --evnt-space-175: 5px;
+  --evnt-space-150: 6px;
+  --evnt-space-200: 8px;
+  --evnt-space-250: 10px;
+  --evnt-space-300: 12px;
+  --evnt-space-350: 14px;
+  --evnt-space-400: 16px;
+  --evnt-space-450: 18px;
+  --evnt-space-500: 20px;
+  --evnt-space-550: 22px;
+  --evnt-space-600: 24px;
+  --evnt-space-650: 25px;
+  --evnt-space-700: 28px;
+  --evnt-space-750: 30px;
+  --evnt-space-800: 32px;
+  --evnt-space-900: 36px;
+  --evnt-space-950: 36px;
+  --evnt-space-1000: 40px;
+  --evnt-space-1100: 44px;
+  --evnt-space-1200: 48px;
+}
+
+
+/*
+ * ==================================================
+ * Fix for Testimonials Swiper Layout
+ * ==================================================
+ */
+
+/*
+ * ==================================================
+ * REQUIRED CSS for Testimonials Swiper
+ * ==================================================
+ */
+
+/* Ensure the slider container has a position for the navigation buttons */
+.testimonial-slider {
+  position: relative;
+}
+
+/* This ensures the Swiper wrapper uses flexbox to align slides. */
+.testimonial-slider .swiper-wrapper {
+  display: flex;
+  align-items: stretch; /* Makes all cards in a row the same height */
+}
+
+/* This ensures each slide behaves correctly. */
+.testimonial-slider .swiper-slide {
+
+  flex-shrink: 0;
+}
+
+/* This makes the inner card fill the slide area. */
+.testimonial-slider .testimonial-item {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.new-class{
+  background-color: aquamarine;
+}
+.login-btn{
+  font-size: 12px;
+  background-color: #ffff !important;
+  border: 1px solid #ffff  !important;
+  color: #000000;
+   margin-top: 8px !important;
+}
+.login-btn:hover{
+  background-color: #0d77cb !important;
+  border: 1px solid #0d77cb  !important;
+  color: #ffffff;
+  margin-top: 8px !important;
+} 
+/* --- IMPORTANT: Make the navigation buttons visible --- */
+.testimonial-slider .swiper-button-prev,
+.testimonial-slider .swiper-button-next {
+  color: #fff; /* Change to a color that is visible on your background */
+  background-color: rgba(0, 0, 0, 0.3); /* Add a semi-transparent background */
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  margin-top: -22px; /* Center the button vertically */
+}
+
+.testimonial-slider .swiper-button-prev::after,
+.testimonial-slider .swiper-button-next::after {
+  font-size: 20px; /* Adjust arrow size */
+}

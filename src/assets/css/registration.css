@@ -1,0 +1,225 @@
+/* Registration Modal Styles */
+.registration-modal .modal-dialog {
+  max-width: 900px;
+}
+
+.registration-modal-header {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  border-bottom: none;
+  padding: 1.5rem;
+}
+
+.registration-modal-title {
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.registration-modal-body {
+  padding: 2rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.registration-modal-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  padding: 1rem 2rem;
+}
+
+/* Form Styles */
+.form-label-custom {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.form-control-custom {
+  border-radius: 0.5rem;
+  border: 1px solid #ced4da;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.form-control-custom:focus {
+  border-color: #6a11cb;
+  box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.25);
+}
+
+/* Button Styles */
+.btn-custom-primary {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-custom-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-custom-secondary {
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-custom-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile Image Upload */
+.profile-image-container {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border: 3px dashed #6a11cb;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+}
+.form-check-input[type=checkbox]{
+  border: 1px solid #000;
+}
+.profile-image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+}
+
+/* Radio and Checkbox Styles */
+.user-type-option, .gender-option, .terms-checkbox {
+  margin-bottom: 0.5rem;
+}
+
+.user-type-option .form-check-input, 
+.gender-option .form-check-input,
+.terms-checkbox .form-check-input {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.user-type-option .form-check-label, 
+.gender-option .form-check-label,
+.terms-checkbox .form-check-label {
+  font-weight: 500;
+}
+
+/* Dropdown Styles */
+.dropdown-custom {
+  border-radius: 0.5rem;
+  border: 1px solid #ced4da;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.dropdown-custom:focus {
+  border-color: #6a11cb;
+  box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.25);
+}
+
+/* Verification Code Input */
+.verification-code-input {
+  font-family: monospace;
+  font-size: 1.5rem;
+  letter-spacing: 0.5rem;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* Success Icons */
+.success-icon, .verification-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: rgba(40, 167, 69, 0.1);
+  margin: 0 auto;
+}
+
+.verification-icon {
+  background-color: rgba(13, 110, 253, 0.1);
+}
+
+/* Resend Code Button */
+.resend-code-btn {
+  color: #6a11cb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.resend-code-btn:hover {
+  color: #2575fc;
+  text-decoration: underline;
+}
+
+/* Error Messages */
+.val-error {
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Progress Bar */
+.progress {
+  height: 6px;
+  border-radius: 3px;
+  background-color: #e9ecef;
+}
+
+.progress-bar {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .registration-modal .modal-dialog {
+    max-width: 95%;
+  }
+  
+  .registration-modal-body {
+    padding: 1rem;
+  }
+  
+  .registration-modal-footer {
+    padding: 1rem;
+  }
+}
+
+/* Scrollbar Styling */
+.registration-modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.registration-modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.registration-modal-body::-webkit-scrollbar-thumb {
+  background: #6a11cb;
+  border-radius: 10px;
+}
+
+.registration-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #2575fc;
+}
