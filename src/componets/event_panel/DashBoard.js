@@ -19,10 +19,11 @@ import {
 import "../../assets/css/dashboard.css";
 import DashBoardHeader from "./DashBoardHeader";
 import LeftNav from "./LeftNav";
-import PageEditor from "./header/edit_pages/PageEditor";
+
 
 import CardsGrid from "./header/CardsPage";
 import EventCarousel from "../pages/EventCarousel";
+import EditModal from "../../componets/event_panel/EditModal";
 
 const DashBoard = () => {
   const location = useLocation();
@@ -162,7 +163,7 @@ const DashBoard = () => {
         </div>
       </div>
 
-      <PageEditor
+      <EditModal
         show={showEditModal}
         onHide={() => setShowEditModal(false)}
         pageId={selectedPageId}

@@ -34,19 +34,8 @@ const AboutUsEdit = ({ pageId, onEdit, show, onHide }) => {
           (item) => String(item.page) === String(pageId)
         );
         
-        // Process module items to ensure they have title and subtitle structure
-        const processedItems = filtered.map(item => {
-          if (item.module && Array.isArray(item.module)) {
-            // Check if module items are strings (old format) or objects (new format)
-            if (item.module.length > 0 && typeof item.module[0] === 'string') {
-              // Convert old format (array of strings) to new format (array of objects)
-              item.module = item.module.map(str => ({ title: str, subtitle: "" }));
-            }
-          }
-          return item;
-        });
-        
-        setItems(processedItems);
+        // The API returns module as an array of strings, so we don't need to convert it
+        setItems(filtered);
       }
     } catch (err) {
       console.error("Error fetching items:", err);
@@ -70,12 +59,12 @@ const AboutUsEdit = ({ pageId, onEdit, show, onHide }) => {
     setItems(copy);
   };
 
-  const updateModuleItem = (itemIndex, moduleIndex, field, value) => {
+  const updateModuleItem = (itemIndex, moduleIndex, value) => {
     const copy = [...items];
-    if (!copy[itemIndex].module[moduleIndex]) {
-      copy[itemIndex].module[moduleIndex] = { title: "", subtitle: "" };
+    if (!copy[itemIndex].module) {
+      copy[itemIndex].module = [];
     }
-    copy[itemIndex].module[moduleIndex][field] = value;
+    copy[itemIndex].module[moduleIndex] = value;
     setItems(copy);
   };
 
@@ -84,7 +73,7 @@ const AboutUsEdit = ({ pageId, onEdit, show, onHide }) => {
     if (!copy[itemIndex].module) {
       copy[itemIndex].module = [];
     }
-    copy[itemIndex].module.push({ title: "", subtitle: "" });
+    copy[itemIndex].module.push("");
     setItems(copy);
   };
 
@@ -107,8 +96,7 @@ const AboutUsEdit = ({ pageId, onEdit, show, onHide }) => {
           return;
         }
         await axios.delete(
-          `https://mahadevaaya.com/eventmanagement/eventmanagement_backend/api/aboutus-item/
- `,
+          `https://mahadevaaya.com/eventmanagement/eventmanagement_backend/api/aboutus-item/`,
           {
             data: { id: itemToRemove.id },
             headers: {
@@ -160,8 +148,7 @@ const AboutUsEdit = ({ pageId, onEdit, show, onHide }) => {
           }
           
           await axios.put(
-            `https://mahadevaaya.com/eventmanagement/eventmanagement_backend/api/aboutus-item/
- `,
+            `https://mahadevaaya.com/eventmanagement/eventmanagement_backend/api/aboutus-item/`,
             formData,
             {
               headers: {
@@ -182,7 +169,12 @@ const AboutUsEdit = ({ pageId, onEdit, show, onHide }) => {
           await axios.post(
             "https://mahadevaaya.com/eventmanagement/eventmanagement_backend/api/aboutus-item/",
             formData,
-           
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
           );
         }
       }
@@ -281,20 +273,12 @@ const AboutUsEdit = ({ pageId, onEdit, show, onHide }) => {
                           item.module.map((moduleItem, moduleIndex) => (
                             <div key={moduleIndex} className="mb-3 p-3 border rounded">
                               <Row className="mb-2">
-                                <Col lg={12}>
-                                  <Form.Label className="small">Module Title</Form.Label>
+                                <Col sm={10}>
+                                  <Form.Label className="small">Module Item</Form.Label>
                                   <Form.Control
-                                    placeholder="Module title"
-                                    value={moduleItem.title || ""}
-                                    onChange={(e) => updateModuleItem(index, moduleIndex, "title", e.target.value)}
-                                  />
-                                </Col>
-                                <Col lg={12}>
-                                  <Form.Label className="small">Module Subtitle</Form.Label>
-                                  <Form.Control
-                                    placeholder="Module subtitle"
-                                    value={moduleItem.subtitle || ""}
-                                    onChange={(e) => updateModuleItem(index, moduleIndex, "subtitle", e.target.value)}
+                                    placeholder="Module item"
+                                    value={moduleItem || ""}
+                                    onChange={(e) => updateModuleItem(index, moduleIndex, e.target.value)}
                                   />
                                 </Col>
                                 <Col sm={2} className="d-flex align-items-end">

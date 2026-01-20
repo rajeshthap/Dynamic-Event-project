@@ -8,8 +8,10 @@ const EditModal = ({ show, onHide, pageId, initialTitle, initialSubtitle, onSave
   const [selectedComponents, setSelectedComponents] = useState([]);
   const [showCardEdit, setShowCardEdit] = useState(false);
   const [showCarouselEdit, setShowCarouselEdit] = useState(false);
-  const [showAboutUsEdit, setShowAboutUsEdit] = useState(false); // New state for AboutUsEdit
+  const [showAboutUsEdit, setShowAboutUsEdit] = useState(false);
   const [currentEditingIndex, setCurrentEditingIndex] = useState(0);
+  // Missing state variables - adding them here
+  const [pageTitle, setPageTitle] = useState("");
   const [pageSubtitle, setPageSubtitle] = useState("");
   const [showSubtitleField, setShowSubtitleField] = useState(!!initialSubtitle);
   const [pageData, setPageData] = useState(null);
@@ -56,7 +58,6 @@ const EditModal = ({ show, onHide, pageId, initialTitle, initialSubtitle, onSave
 
   const fetchPageData = async (id) => {
     try {
-      // Fix: Include the ID in the URL to fetch specific page data
       const response = await fetch(`https://mahadevaaya.com/eventmanagement/eventmanagement_backend/api/pages-item/${id}/`);
       if (response.ok) {
         const data = await response.json();
@@ -125,12 +126,15 @@ const EditModal = ({ show, onHide, pageId, initialTitle, initialSubtitle, onSave
         page_title: pageTitle,
       };
       
-    
+      // Only include sub_title if it's provided
+      if (showSubtitleField) {
+        payload.sub_title = pageSubtitle;
+      }
       
       console.log("Payload being sent:", payload);
       
       // Use PUT with the ID in the URL for updates
-      const response = await fetch(`https://mahadevaaya.com/eventmanagement/eventmanagement_backend/api/pages-item/`, {
+      const response = await fetch(`https://mahadevaaya.com/eventmanagement/eventmanagement_backend/api/pages-item/${selectedPageId}/`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -233,7 +237,7 @@ const EditModal = ({ show, onHide, pageId, initialTitle, initialSubtitle, onSave
       setSelectedComponents([]);
       setShowCardEdit(false);
       setShowCarouselEdit(false);
-      setShowAboutUsEdit(false); // Reset AboutUsEdit state
+      setShowAboutUsEdit(false);
       setCurrentEditingIndex(0);
       setSelectedPageId(pageId || "");
       setUpdateMessage("");
@@ -397,7 +401,7 @@ const EditModal = ({ show, onHide, pageId, initialTitle, initialSubtitle, onSave
                     // Add New Page Form
                     <>
                       <Form.Group className="mb-3">
-                        <Form.Label className="fw-bold">Select Parent Page1</Form.Label>
+                        <Form.Label className="fw-bold">Select Parent Page</Form.Label>
                         {loadingNavbar ? (
                           <div className="d-flex justify-content-center align-items-center py-3">
                             <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
