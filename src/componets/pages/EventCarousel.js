@@ -1,15 +1,16 @@
 // src/components/HeroCarousel.js
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import Showcase from "../../assets/images/education/showcase-6.webp";
 import Slide2Image from "../../assets/images/education/activities-1.webp"; 
 import Slide3Image from "../../assets/images/education/events-1.webp";
 import RegistrationModal from './RegistrationModal'; // Import the modal component
 import "../../assets/css/mainstyle.css";
+import { loadAllCarouselItems } from '../event_panel/header/AllApi'; // Import loadAllCarouselItems instead of fetchCarouselItemsByPage
 
-// --- Define the content for each of your 3 slides ---
-const carouselSlides = [
+// --- Define the default content for each of your 3 slides ---
+const defaultCarouselSlides = [
   {
     title: "Inspiring Excellence Through Education",
     subtitle: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eget lacus id tortor facilisis tincidunt.",
@@ -60,9 +61,52 @@ const carouselSlides = [
   }
 ];
 
-function EventCarousel() {
+function EventCarousel() { // Remove pageId prop since we're fetching all items
   const [index, setIndex] = useState(0);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+  const [carouselSlides, setCarouselSlides] = useState(defaultCarouselSlides);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch all carousel data from API
+  useEffect(() => {
+    const fetchCarouselData = async () => {
+      try {
+        setLoading(true);
+        // Use loadAllCarouselItems instead of fetchCarouselItemsByPage
+        const apiItems = await loadAllCarouselItems();
+        
+        if (apiItems && apiItems.length > 0) {
+          // Transform API data to match our carousel structure
+          const transformedSlides = apiItems.map((item, index) => {
+            // Use default values for fields that might not be in the API response
+            const defaultSlide = defaultCarouselSlides[index % defaultCarouselSlides.length];
+            
+            return {
+              title: item.title || defaultSlide.title,
+              subtitle: item.sub_title || defaultSlide.subtitle,
+              description: item.description || defaultSlide.subtitle,
+              image: item.image || defaultSlide.image,
+              id: item.id,
+              page: item.page, // Include page ID for reference
+              // Keep the rest of the structure from default slides
+              stats: defaultSlide.stats,
+              features: defaultSlide.features,
+              event: defaultSlide.event
+            };
+          });
+          
+          setCarouselSlides(transformedSlides);
+        }
+      } catch (error) {
+        console.error("Error fetching carousel data:", error);
+        // Keep using default slides if API fails
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchCarouselData();
+  }, []); // Remove pageId from dependencies since we're fetching all items
 
   const handleSelect = (selectedIndex) => {
     setIndex(selectedIndex);
@@ -72,6 +116,10 @@ function EventCarousel() {
     e.preventDefault();
     setShowRegistrationModal(true);
   };
+
+  if (loading) {
+    return <div>Loading carousel...</div>;
+  }
 
   return (
     <>

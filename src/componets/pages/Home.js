@@ -1,6 +1,9 @@
+// src/components/Home.js
 import React, { useEffect, useState } from "react";
-import { fetchCardsByPage } from "../event_panel/header/CardsApi";
-import CardsGrid from "../event_panel/header/CardsGrid";
+import { fetchCardsByPage } from "../event_panel/header/AllApi";
+import CardsPage from "../event_panel/header/CardsPage";
+import EventCarousel from "./EventCarousel";
+// Import the EventCarousel
 
 function Home() {
   const [cards, setCards] = useState([]);
@@ -14,7 +17,9 @@ function Home() {
 
   return (
     <div className="main">
-      <CardsGrid cards={cards} />
+      {/* Add the EventCarousel component here */}
+      <EventCarousel />
+      <CardsPage cards={cards} />
     </div>
   );
 }

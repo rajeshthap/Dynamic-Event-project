@@ -1,4 +1,3 @@
-// DashBoard.js
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -12,14 +11,19 @@ import {
 import { useLocation } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
-import { fetchCardsByPage, refreshCards, fetchCardsForHome } from "../../componets/event_panel/header/CardsApi";
+import {
+  fetchCardsByPage,
+  refreshCards,
+  fetchCardsForHome,
+} from "./header/AllApi";
 import "../../assets/css/dashboard.css";
 import DashBoardHeader from "./DashBoardHeader";
 import LeftNav from "./LeftNav";
-import EditModal from "./EditModal";
+import PageEditor from "./header/edit_pages/PageEditor";
 
+import CardsGrid from "./header/CardsPage";
+import EventCarousel from "../pages/EventCarousel";
 
-import CardsGrid from "./header/CardsGrid";
 const DashBoard = () => {
   const location = useLocation();
 
@@ -29,6 +33,7 @@ const DashBoard = () => {
 
   const [selectedPageId, setSelectedPageId] = useState(null);
   const [pageTitle, setPageTitle] = useState("Dashboard");
+  const [pageSubtitle, setPageSubtitle] = useState("");
   const [pageData, setPageData] = useState(null);
 
   const [loading, setLoading] = useState(false);
@@ -42,10 +47,12 @@ const DashBoard = () => {
     if (location.state?.pageId) {
       setSelectedPageId(location.state.pageId);
       setPageTitle(location.state.pageTitle || "Dashboard");
+      setPageSubtitle(location.state.pageSubtitle || "");
     } else {
       setSelectedPageId(null);
       setPageData(null);
       setPageTitle("Dashboard");
+      setPageSubtitle("");
     }
   }, [location]);
 
@@ -56,24 +63,23 @@ const DashBoard = () => {
     if (selectedPageId) fetchPageData(selectedPageId);
   }, [selectedPageId]);
 
-const fetchPageData = async (pageId) => {
-  setLoading(true);
-  setError(null);
+  const fetchPageData = async (pageId) => {
+    setLoading(true);
+    setError(null);
 
-  try {
-    const cards = await fetchCardsByPage(pageId);
+    try {
+      const cards = await fetchCardsByPage(pageId);
 
-    setPageData({
-      content_type: "cards",
-      cards,
-    });
-  } catch (err) {
-    setError("Failed to load page data");
-  } finally {
-    setLoading(false);
-  }
-};
-
+      setPageData({
+        content_type: "cards",
+        cards,
+      });
+    } catch (err) {
+      setError("Failed to load page data");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   /* ============================
      DEVICE CHECK
@@ -100,8 +106,8 @@ const fetchPageData = async (pageId) => {
 
     return (
       <Row>
-       <CardsGrid cards={pageData.cards} />
-
+        <CardsGrid cards={pageData.cards} />
+         <EventCarousel />
       </Row>
     );
   };
@@ -133,7 +139,10 @@ const fetchPageData = async (pageId) => {
             ) : pageData ? (
               <>
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                  <h2>{pageTitle}</h2>
+                  <div>
+                    <h2>{pageTitle}</h2>
+                    {pageSubtitle && <p className="text-muted">{pageSubtitle}</p>}
+                  </div>
                   <Button onClick={() => setShowEditModal(true)}>
                     <FaEdit /> Edit
                   </Button>
@@ -142,22 +151,33 @@ const fetchPageData = async (pageId) => {
               </>
             ) : (
               <div className="text-center my-5">
-
                 <h3>Welcome to the Dashboard</h3>
-                <p>Please select a page from the left navigation to view its content.</p>
+                <p>
+                  Please select a page from the left navigation to view its
+                  content.
+                </p>
               </div>
             )}
           </Container>
         </div>
       </div>
 
-      <EditModal
+      <PageEditor
         show={showEditModal}
         onHide={() => setShowEditModal(false)}
         pageId={selectedPageId}
         initialTitle={pageTitle}
+        initialSubtitle={pageSubtitle}
         initialData={pageData}
-        onSave={() => fetchPageData(selectedPageId)}
+        onSave={(componentType) => {
+          if (componentType === "page_details") {
+            // Refresh page data if page details were updated
+            fetchPageData(selectedPageId);
+          } else {
+            // Refresh page data for other component updates
+            fetchPageData(selectedPageId);
+          }
+        }}
       />
     </>
   );

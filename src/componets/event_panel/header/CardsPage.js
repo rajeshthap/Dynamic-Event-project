@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
 
-const CardsGrid = ({ cards }) => {
+const CardsPage = ({ cards }) => {
   if (!cards || cards.length === 0) {
     return <p className="text-muted">No cards to display</p>;
   }
@@ -11,7 +11,6 @@ const CardsGrid = ({ cards }) => {
       {cards.map((card) => (
         <Col md={4} key={card.id}>
           <Card className="h-100 shadow-sm">
-
             {/* Show Image if exists */}
             {card.image && (
               <Card.Img
@@ -42,4 +41,4 @@ const CardsGrid = ({ cards }) => {
   );
 };
 
-export default CardsGrid;
+export default CardsPage;

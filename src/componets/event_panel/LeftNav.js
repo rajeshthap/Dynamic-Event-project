@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Nav, Offcanvas, Modal, Form, Button } from "react-bootstrap";
+import { Nav, Offcanvas, Modal, Form, Button, Collapse } from "react-bootstrap";
 import {
   FaTachometerAlt,
   FaSignOutAlt,
   FaFileAlt,
   FaPlus,
+  FaChevronDown,
+  FaChevronRight,
 } from "react-icons/fa";
 import axios from "axios";
 import "../../assets/css/dashboard.css";
@@ -13,10 +15,12 @@ import { Link, useNavigate } from "react-router-dom";
 const LeftNav = ({ sidebarOpen, setSidebarOpen, isMobile, isTablet, selectedPageId, setSelectedPageId }) => {
   const [showAddTitleModal, setShowAddTitleModal] = useState(false);
   const [pageTitle, setPageTitle] = useState("");
+  const [pageSubtitle, setPageSubtitle] = useState("");
   const [pagesData, setPagesData] = useState([]);
   const [fetchingPages, setFetchingPages] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [expandedItems, setExpandedItems] = useState({});
   const navigate = useNavigate();
 
   // Fetch pages data from API when component mounts
@@ -28,11 +32,11 @@ const LeftNav = ({ sidebarOpen, setSidebarOpen, isMobile, isTablet, selectedPage
     try {
       setFetchingPages(true);
       const response = await axios.get(
-        "https://mahadevaaya.com/eventmanagement/eventmanagement_backend/api/pages-item/"
+        "https://mahadevaaya.com/eventmanagement/eventmanagement_backend/api/navbar-list/"
       );
       
-      if (response.data.success) {
-        setPagesData(response.data.data);
+      if (response.data) {
+        setPagesData(response.data);
       }
     } catch (error) {
       console.error("Error fetching pages data:", error);
@@ -54,13 +58,17 @@ const LeftNav = ({ sidebarOpen, setSidebarOpen, isMobile, isTablet, selectedPage
     try {
       const response = await axios.post(
         "https://mahadevaaya.com/eventmanagement/eventmanagement_backend/api/pages-item/",
-        { page_title: pageTitle }
+        { 
+          page_title: pageTitle,
+        
+        }
       );
       
-      setMessage("Title added successfully!");
+      setMessage("Page added successfully!");
       setPageTitle("");
+      setPageSubtitle("");
       
-      // Refresh the pages data after adding a new title
+      // Refresh the pages data after adding a new page
       await fetchPagesData();
       
       setTimeout(() => {
@@ -68,19 +76,20 @@ const LeftNav = ({ sidebarOpen, setSidebarOpen, isMobile, isTablet, selectedPage
         setMessage("");
       }, 1500);
     } catch (error) {
-      setMessage("Error adding title. Please try again.");
+      setMessage("Error adding page. Please try again.");
       console.error("Error:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handlePageClick = (pageId, pageTitle) => {
-    // Navigate to dashboard with page ID and page title as state
+  const handlePageClick = (pageId, pageTitle, pageSubtitle) => {
+    // Navigate to dashboard with page ID, page title, and page subtitle as state
     navigate(`/DashBoard`, { 
       state: { 
         pageId,
-        pageTitle // Pass the page title in the navigation state
+        pageTitle, // Pass the page title in the navigation state
+        pageSubtitle // Pass the page subtitle in the navigation state
       } 
     });
     // Close sidebar on mobile after selection
@@ -89,19 +98,67 @@ const LeftNav = ({ sidebarOpen, setSidebarOpen, isMobile, isTablet, selectedPage
     }
   };
 
+  const toggleExpanded = (itemId) => {
+    setExpandedItems(prev => ({
+      ...prev,
+      [itemId]: !prev[itemId]
+    }));
+  };
+
   // Static menu items
   const staticMenuItems = [
     {
       icon: <FaTachometerAlt />,
       label: "Dashboard",
-      path: "/dashboard",
+      path: "/DashBoard",
     },
     {
       icon: <FaPlus />,
-      label: "Add Title",
+      label: "Add Page",
       action: handleAddTitleClick,
     },
   ];
+
+  // Recursive function to render menu items with children
+  const renderMenuItem = (item, level = 0) => {
+    const hasChildren = item.children && item.children.length > 0;
+    const isExpanded = expandedItems[item.id];
+    
+    return (
+      <div key={item.id}>
+        <Nav.Link
+          className={`nav-item ${selectedPageId === item.id ? "active" : ""}`}
+          style={{ paddingLeft: `${level * 15 + 15}px` }}
+          onClick={() => {
+            if (hasChildren) {
+              toggleExpanded(item.id);
+            } else {
+              handlePageClick(item.id, item.page_title, "");
+            }
+          }}
+        >
+          <span className="nav-icon">
+            {hasChildren ? (
+              isExpanded ? <FaChevronDown /> : <FaChevronRight />
+            ) : (
+              <FaFileAlt />
+            )}
+          </span>
+          <div className="nav-text">
+            <div>{item.page_title}</div>
+          </div>
+        </Nav.Link>
+        
+        {hasChildren && (
+          <Collapse in={isExpanded}>
+            <div>
+              {item.children.map(child => renderMenuItem(child, level + 1))}
+            </div>
+          </Collapse>
+        )}
+      </div>
+    );
+  };
 
   return (
     <>
@@ -119,7 +176,7 @@ const LeftNav = ({ sidebarOpen, setSidebarOpen, isMobile, isTablet, selectedPage
           {staticMenuItems.map((item, index) => (
             <div key={index}>
               {item.action ? (
-                // If item has an action (like Add Title)
+                // If item has an action (like Add Page)
                 <Nav.Link
                   className="nav-item"
                   onClick={item.action}
@@ -144,18 +201,8 @@ const LeftNav = ({ sidebarOpen, setSidebarOpen, isMobile, isTablet, selectedPage
             </div>
           ))}
           
-          {/* Dynamic page items */}
-          {pagesData.map(page => (
-            <div key={page.id}>
-              <Nav.Link
-                className={`nav-item ${selectedPageId === page.id ? "active" : ""}`}
-                onClick={() => handlePageClick(page.id, page.page_title)} // Pass both page ID and title
-              >
-                <span className="nav-icon"><FaFileAlt /></span>
-                <span className="nav-text">{page.page_title}</span>
-              </Nav.Link>
-            </div>
-          ))}
+          {/* Dynamic page items with hierarchical structure */}
+          {pagesData.map(page => renderMenuItem(page))}
         </Nav>
 
         <div className="sidebar-footer">
@@ -210,30 +257,20 @@ const LeftNav = ({ sidebarOpen, setSidebarOpen, isMobile, isTablet, selectedPage
               </div>
             ))}
             
-            {/* Dynamic page items for mobile */}
-            {pagesData.map(page => (
-              <div key={page.id}>
-                <Nav.Link
-                  className={`nav-item ${selectedPageId === page.id ? "active" : ""}`}
-                  onClick={() => handlePageClick(page.id, page.page_title)} // Pass both page ID and title
-                >
-                  <span className="nav-icon"><FaFileAlt /></span>
-                  <span className="nav-text br-nav-text-mob">{page.page_title}</span>
-                </Nav.Link>
-              </div>
-            ))}
+            {/* Dynamic page items for mobile with hierarchical structure */}
+            {pagesData.map(page => renderMenuItem(page))}
           </Nav>
         </Offcanvas.Body>
       </Offcanvas>
 
-      {/* Add Title Modal */}
+      {/* Add Page Modal */}
       <Modal show={showAddTitleModal} onHide={() => setShowAddTitleModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Add Page Title</Modal.Title>
+          <Modal.Title>Add Page</Modal.Title>
         </Modal.Header>
         <Form onSubmit={handleTitleSubmit}>
           <Modal.Body>
-            <Form.Group controlId="pageTitle">
+            <Form.Group controlId="pageTitle" className="mb-3">
               <Form.Label>Page Title</Form.Label>
               <Form.Control
                 type="text"
@@ -243,6 +280,7 @@ const LeftNav = ({ sidebarOpen, setSidebarOpen, isMobile, isTablet, selectedPage
                 required
               />
             </Form.Group>
+            
             {message && (
               <div className={`mt-3 ${message.includes("Error") ? "text-danger" : "text-success"}`}>
                 {message}
@@ -254,7 +292,7 @@ const LeftNav = ({ sidebarOpen, setSidebarOpen, isMobile, isTablet, selectedPage
               Cancel
             </Button>
             <Button variant="primary" type="submit" disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save Title"}
+              {isLoading ? "Saving..." : "Save Page"}
             </Button>
           </Modal.Footer>
         </Form>

@@ -1,8 +1,6 @@
-// AuthContext.js for your eventmanagement project
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext(null);
-
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
@@ -53,7 +51,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Initialize auth state from localStorage on app load
-  React.useEffect(() => {
+  useEffect(() => {
     const storedAuth = localStorage.getItem('auth');
     if (storedAuth) {
       try {
